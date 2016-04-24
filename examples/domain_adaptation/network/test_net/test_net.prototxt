@@ -1,0 +1,42 @@
+name: "test"
+input: "source_target_1"
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 227
+  dim: 227
+}
+
+input: "source_target_2"
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 227
+  dim: 227
+}
+
+
+layer 
+{
+  name: "concated"
+  type: "Concat"
+  bottom: "source_target_1"
+  bottom: "source_target_2"
+  top: "concated"
+  concat_param {
+    concat_dim: 0 
+  }
+}
+
+
+layer 
+{
+  name: "sliced"
+  type: "Slice"
+  bottom: "concated"
+  top: "s1"
+  top: "s2"
+  slice_param {
+    slice_dim: 0
+  } 
+}

@@ -1,0 +1,24 @@
+net: "examples/domain_adaptation/network/scratch_train_val.prototxt"
+test_iter: 33 		# test_iter specifies how many forward passes the test should carry out batchsize 256 x 38 > 9480 total test images.
+test_interval: 100 	# Carry out testing every 196 training iterations appx one epoc
+
+base_lr: 0.01 		# begin training at a learning rate of 0.01 = 1e-2
+lr_policy: "inv" 	# learning rate policy: drop the learning rate in "steps"
+                  	# by a factor of gamma every stepsize iterations
+#stepvalue: 1000 
+#stepvalue: 6000
+
+gamma: 0.0001 		# drop the learning rate by a factor of 10
+           		# (i.e., multiply it by a factor of gamma = 0.1)
+
+power: 0.4
+#stepsize: 5000 	# drop the learning rate every 100K iterations
+
+display: 50 		# Display after every x iterations
+max_iter: 20000 	# max number of iterations
+momentum: 0.9 		# momentum for gradient
+weight_decay: 0.0005 	#how much weight is decayed
+solver_mode: GPU 	# solver mode: GPU
+snapshot: 2000		# snapshot intermediate results
+snapshot_prefix: "examples/domain_adaptation/snapshots/snapshots"
+snapshot_after_train: true

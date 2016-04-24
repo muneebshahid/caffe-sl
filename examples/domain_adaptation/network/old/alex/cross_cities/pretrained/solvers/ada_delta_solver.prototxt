@@ -1,0 +1,19 @@
+net: "examples/domain_adaptation/network/train_val.prototxt"
+test_iter: 38 # test_iter specifies how many forward passes the test should carry out batchsize 256 x 38 > 9480 total test images.
+test_interval: 200 # Carry out testing every 196 training iterations appx one epoc
+# The base learning rate, momentum and the weight decay of the network.
+base_lr: 1.0
+lr_policy: "fixed"
+momentum: 0.95
+weight_decay: 0.0005
+# Display every 100 iterations
+display: 100
+# The maximum number of iterations
+max_iter: 20000
+# snapshot intermediate results
+snapshot: 5000
+snapshot_prefix: "examples/domain_adaptation/snapshots/snapshot_adadelta"
+# solver mode: CPU or GPU
+solver_mode: GPU
+type: "AdaDelta"
+delta: 1e-6

@@ -1,0 +1,36 @@
+net: "examples/domain_adaptation/network/alexnet/scratch/train_val.prototxt"
+test_iter: 30 # test_iter specifies how many forward passes the test should carry out batchsize 320 x 30 > 9840 total test images.
+test_interval: 100 # Carry out testing every 100 training iterations.
+
+base_lr: 0.01 # begin training at a learning rate of 0.01 = 1e-2
+
+lr_policy: "inv" # learning rate policy: drop the learning rate in "steps"
+                  # by a factor of gamma every stepsize iterations
+
+gamma: 0.001 # drop the learning rate by a factor of 10
+           # (i.e., multiply it by a factor of gamma = 0.1)
+power: 1
+
+stepsize: 3000 # drop the learning rate every 100K iterations
+display: 25 # Display after every x iterations
+max_iter: 5000 # max number of iterations
+momentum: 0.9 # momentum for gradient
+weight_decay: 0.0005 #how much weight is decayed
+solver_mode: GPU # solver mode: GPU
+# snapshot intermediate results
+snapshot: 5000
+snapshot_prefix: "snapshots"
+snapshot_after_train: true
+
+
+# The snapshot interval in iterations.
+# snapshot: 5000
+# File path prefix for snapshotting model weights and solver state.
+# Note: this is relative to the invocation of the `caffe` utility, not the
+# solver definition file.
+# snapshot_prefix: "/path/to/model"
+# Snapshot the diff along with the weights. This can help debugging training
+# but takes more storage.
+#snapshot_diff: false
+# A final snapshot is saved at the end of training unless
+# this flag is set to false. The default is true.
