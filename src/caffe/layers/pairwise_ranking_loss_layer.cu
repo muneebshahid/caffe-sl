@@ -51,7 +51,5 @@ void PairwiseRankingLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& t
   }
 }
 
-INSTANTIATE_CLASS(PairwiseRankingLossLayer);
-REGISTER_LAYER_CLASS(PairwiseRankingLoss);
-
+INSTANTIATE_LAYER_GPU_FUNCS(PairwiseRankingLossLayer);
 }  // namespace caffe
