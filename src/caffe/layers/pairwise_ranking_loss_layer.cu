@@ -18,7 +18,7 @@ void PairwiseRankingLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
   Dtype* per_triplet_loss = bottom[0]->mutable_gpu_diff();
   int count = bottom[0]->count();
 
-  Dtype* loss = top[0]->mutable_gpu_data();
+  Dtype* loss = top[0]->mutable_cpu_data();
   loss[0] = 0;
   for (int i=0; i<count; ++i) {
     per_triplet_loss[i] = std::max(Dtype(0),
