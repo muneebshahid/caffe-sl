@@ -13,9 +13,9 @@ namespace caffe {
 template <typename Dtype>
 void PairwiseRankingLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
-  const Dtype* pos_sim = bottom[0]->gpu_data();
-  const Dtype* neg_sim = bottom[1]->gpu_data();
-  Dtype* per_triplet_loss = bottom[0]->mutable_gpu_diff();
+  const Dtype* pos_sim = bottom[0]->cpu_data();
+  const Dtype* neg_sim = bottom[1]->cpu_data();
+  Dtype* per_triplet_loss = bottom[0]->mutable_cpu_diff();
   int count = bottom[0]->count();
 
   Dtype* loss = top[0]->mutable_cpu_data();
