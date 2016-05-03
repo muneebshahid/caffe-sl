@@ -13,6 +13,13 @@ def show(ims, titles):
     return
 
 
+def crop(im):
+    y_start = np.random.random_integers(0, 29, 4)
+    x_start = np.random.random_integers(0, 29, 4)
+    dst = [im[y:y+227, x:x+227] for x, y in zip(x_start, y_start)]
+    return dst
+
+
 def translate(im):
     pos = np.random.random_integers(10, 30, 1)
     neg = np.random.random_integers(-30, -10, 1)
@@ -56,7 +63,8 @@ def perspective_transform(im):
 
 def process(im):
     return {'tra': translate(copy.deepcopy(im)), 'rot': rotate(copy.deepcopy(im)),
-            'aff': affine_transform(copy.deepcopy(im)), 'per': perspective_transform(copy.deepcopy(im))}
+            'aff': affine_transform(copy.deepcopy(im)), 'per': perspective_transform(copy.deepcopy(im)),
+            'crp': crop(copy.deepcopy(im))}
 
 
 def write(path, orig_name, augmented_ims):
@@ -128,10 +136,10 @@ def main():
                      for p_folder in fukui_parent_folders
                      for dq in fukui_d_q_folders
                      for c_folder in fukui_child_folders]
-    folders = {#'freiburg': ['summer', 'winter'],
+    folders = {'freiburg': ['summer', 'winter'],}
                #'michigan': ['aug', 'jan'],
                #'fukui': fukui_folders,
-               'nordland': ['summer', 'winter', 'spring', 'fall']}
+               #'nordland': ['summer', 'winter', 'spring', 'fall']}
     print "Augmented Data Saftey Lock"
     create_augmented_data(folders, root_folder_path)
 
