@@ -38,6 +38,15 @@ def rotate(im):
     dst = [cv2.warpAffine(im, m, (cols,rows)) for m in M]
     return dst
 
+def create_patches(im):
+    x_start = [0, 0, 128, 128]
+    y_start = [0, 128, 0, 128]
+    # dst = []
+    # for x in range(0, 256, 64):
+    #     for y in range(0, 256, 64):
+    #         dst.append(im[y:y+12])
+    dst = [im[x:x+64, y:y+64] for x in range(0, 256, 64) for y in range(0, 256, 64)]
+    return dst
 
 def affine_transform(im):
     point_1 = [np.random.random_integers(30, 70, 3).tolist() for i in range(0, aug_num)]
@@ -62,9 +71,10 @@ def perspective_transform(im):
 
 
 def process(im):
-    return {'tra': translate(copy.deepcopy(im)), 'rot': rotate(copy.deepcopy(im)),
-            'aff': affine_transform(copy.deepcopy(im)), 'per': perspective_transform(copy.deepcopy(im)),
-            'crp': crop(copy.deepcopy(im))}
+    return {'pat': create_patches(copy.deepcopy(im)),}
+            #'tra': translate(copy.deepcopy(im)), 'rot': rotate(copy.deepcopy(im)),
+            #'aff': affine_transform(copy.deepcopy(im)), 'per': perspective_transform(copy.deepcopy(im)),
+            #'crp': crop(copy.deepcopy(im)), 'pat': perspective_transform(copy.deepcopy(im))}
 
 
 def write(path, orig_name, augmented_ims):
@@ -136,10 +146,10 @@ def main():
                      for p_folder in fukui_parent_folders
                      for dq in fukui_d_q_folders
                      for c_folder in fukui_child_folders]
-    folders = {'freiburg': ['summer', 'winter'],}
+    folders = {#'freiburg': ['summer', 'winter'],}
                #'michigan': ['aug', 'jan'],
                #'fukui': fukui_folders,
-               #'nordland': ['summer', 'winter', 'spring', 'fall']}
+               'nordland': ['summer',]} #'winter', 'spring', 'fall']}
     print "Augmented Data Saftey Lock"
     create_augmented_data(folders, root_folder_path)
 

@@ -255,6 +255,19 @@ def pseudo_shuffle_data(data, pseudo_shuffle):
             data.extend(extend_data(data_orig))
             i += 1
 
+def get_patch_data(im):
+    ims = []
+    for i in range(0, 15):
+        ims.append(im.replace('.jpg', '-' + str(i) + '.png'))
+    return ims
+
+def create_negative_triplet_instance(size_triplets, data, image_gap, gps_gap, key, image_1):
+    negatives = []
+    for k in range(size_triplets):
+        _, im2 = get_distant_images(dataset=data, image_gap=image_gap, gps_gap=gps_gap, is_fukui=key == 'fukui',
+                                    im1_fixed_index=image_1)
+        negatives.append(im2[1])
+    return negatives
 
 def create_triplets_data(key, data, triplets_dim):
     triplet_data = []
@@ -263,15 +276,25 @@ def create_triplets_data(key, data, triplets_dim):
     for i, pos_data in enumerate(data):
         image_1 = i
         for j in range(num_triplets):
-            instance = pos_data[:2]
-            negatives = []
-            for k in range(size_triplets):
-                _, im2 = get_distant_images(dataset=data, image_gap=image_gap, gps_gap=gps_gap, is_fukui=key == 'fukui',
-                                            im1_fixed_index=image_1)
-                negatives.append(im2[1])
-            instance.extend(negatives)
-            instance.append(pos_data[-1])
-            triplet_data.append(instance)
+            if USE_PATCHES:
+                patches_im1 = get_patch_data(pos_data[0])
+                patches_im2 = get_patch_data(pos_data[1])
+                for im1, im2 in zip(patches_im1, patches_im2):
+                    instance = [im1, im2]
+                    negatives = create_negative_triplet_instance(size_triplets, data, image_gap, gps_gap, key, image_1)
+                    negative_patches_final = []
+                    for negative in negatives:
+                        negative_patches = get_patch_data(negative)
+                        negative_patches_final.append(random.choice(negative_patches))
+                    instance.extend(negative_patches_final)
+                    instance.append(pos_data[-1])
+                    triplet_data.append(instance)
+            else:
+                instance = pos_data[:2]
+                negatives = create_negative_triplet_instance(size_triplets, data, image_gap, gps_gap, key, image_1)
+                instance.extend(negatives)
+                instance.append(pos_data[-1])
+                triplet_data.append(instance)
     print '{0} data len: {1}'.format(key, len(triplet_data))
     return triplet_data
 
@@ -355,7 +378,7 @@ def process_datasets(keys, root_folder_path, write_path, augmented_limit, neg_li
         flattened_triplets_test = flatten_triplets(test_data_triplets)
         print "flattened triplet data train {0}".format(len(flattened_triplets_train))
         print "flattened triplet data test {0}".format(len(flattened_triplets_test))
-        pad_triplets(flattened_triplets_train, 4, 640)
+        # pad_triplets(flattened_triplets_train, 4, 640)
         print "padded triplet data train {0}".format(len(flattened_triplets_train))
         print "writing files...."
         write_data(flattened_triplets_train, root_folder_path, write_path, 'triplet_data_train')
@@ -409,23 +432,24 @@ def main():
     if not osh.is_dir(root_folder_path):
         print "source folder does'nt exist, existing....."
         sys.exit()
-    keys = ['freiburg', 'michigan', 'nordland', 'fukui', 'kitti', 'alderly']
+    keys = ['nordland']#freiburg', 'michigan', 'nordland', 'fukui', 'kitti', 'alderly']
     write_path = caffe_root + '/data/domain_adaptation_data/images/'
-    augmented_limit = {keys[0]: 1, keys[1]: 1, keys[2]: 1, keys[3]: 1, keys[4]: 1, keys[5]: 1}
-    neg_limit = {keys[0]: None,
-                 keys[1]: 300000,
-                 keys[2]: 300000,
-                 keys[3]: 100000,
-                 keys[4]: 300000,
-                 keys[5]: 300000}
-    triplet_limit = {keys[0]: [20, 2],
-                     keys[1]: [12, 2],
-                     keys[2]: [2, 2],
-                     keys[3]: [10, 2],
-                     keys[4]: [2, 2],
-                     keys[5]: [10, 2],}
-    process_datasets(keys, root_folder_path, write_path, None, neg_limit, None)
+    augmented_limit = {keys[0]: 1}
+    neg_limit = {keys[0]: None}
+                 # keys[1]: 300000,
+                 # keys[2]: 300000,
+                 # keys[3]: 100000,
+                 # keys[4]: 300000,
+                 # keys[5]: 300000}
+    triplet_limit = {keys[0]: [1, 1],}
+    #                  keys[1]: [12, 2],
+    #                  keys[2]: [2, 2],
+    #                  keys[3]: [10, 2],
+    #                  keys[4]: [2, 2],
+    #                  keys[5]: [10, 2],}
+    process_datasets(keys, root_folder_path, write_path, augmented_limit, neg_limit, triplet_limit)
 
 if __name__ == "__main__":
-    AUGMENTED_KEYS = ['tra' , 'rot', 'aff', 'per']
+    AUGMENTED_KEYS = ['pat']# , 'rot', 'aff', 'per']
+    USE_PATCHES = False
     main()
