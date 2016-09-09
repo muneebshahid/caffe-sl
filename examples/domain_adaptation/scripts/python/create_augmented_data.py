@@ -151,7 +151,7 @@ def main():
                #'fukui': fukui_folders,
                'nordland': ['summer',]} #'winter', 'spring', 'fall']}
     print "Augmented Data Saftey Lock"
-    create_augmented_data(folders, root_folder_path)
+    #create_augmented_data(folders, root_folder_path)
 
 
 if __name__ == "__main__":

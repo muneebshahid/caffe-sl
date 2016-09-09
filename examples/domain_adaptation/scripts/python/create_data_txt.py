@@ -285,7 +285,8 @@ def create_triplets_data(key, data, triplets_dim):
                     negative_patches_final = []
                     for negative in negatives:
                         negative_patches = get_patch_data(negative)
-                        negative_patches_final.append(random.choice(negative_patches))
+                        rand_int = random.randint(6, 15)
+                        negative_patches_final.append(negative_patches[rand_int])
                     instance.extend(negative_patches_final)
                     instance.append(pos_data[-1])
                     triplet_data.append(instance)
